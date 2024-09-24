@@ -18,11 +18,12 @@ class Bot
         when '/help'
           @bot.api.send_message(chat_id: message.from.id, text: '/d example.video.mp4')
         when '/d'
-
           begin
             video_url = message.to_s.split.last
             Tempfile.open(['downloaded_file', '.mp4']) do |temp_file|
+              @bot.api.send_message(chat_id: message.from.id, text: 'download in server ..')
               video = URI.open(video_url)
+              @bot.api.send_message(chat_id: message.from.id, text: 'sending to client ..')
               temp_file.binmode
               temp_file.write(video.read)
               temp_file.rewind
