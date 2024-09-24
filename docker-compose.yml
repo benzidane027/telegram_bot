@@ -1,0 +1,29 @@
+version: "3.8"
+networks:
+  app_net:
+    ipam:
+      config:
+        - subnet: 20.0.0.0/24
+services:
+  api:
+    container_name: myrails
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./bin:/app/bin"
+      - ".env:/app/.env"
+      
+    command: bash -c "ruby bin/main.rb"
+    
+    networks:
+      app_net:
+        ipv4_address: 20.0.0.10
+
+
+volumes:
+  bin:
+  .env:
+
+
+    
