@@ -22,7 +22,7 @@ class Bot
           video_path = 'https://videos.pexels.com/video-files/6000210/6000210-uhd_1440_2560_24fps.mp4'
 
           Tempfile.open(['downloaded_file', '.mp4']) do |temp_file|
-            video = URI.open(video_path).read
+            video = URI.open(video_path)
             temp_file.binmode
             temp_file.write(video.read)
             temp_file.rewind
