@@ -12,23 +12,25 @@ class Bot
   def run_telegram_bot
     @bot.run do |bot|
       bot.listen do |message|
-        case message.to_s
+        case message.to_s.split.first
         when '/start'
           @bot.api.send_message(chat_id: message.from.id, text: 'welcom in bot')
         when '/help'
-          @bot.api.send_message(chat_id: message.from.id, text: '/download example.video.mp4')
+          @bot.api.send_message(chat_id: message.from.id, text: '/d example.video.mp4')
         when '/d'
 
-          video_path = 'https://videos.pexels.com/video-files/6000210/6000210-uhd_1440_2560_24fps.mp4'
-
-          Tempfile.open(['downloaded_file', '.mp4']) do |temp_file|
-            video = URI.open(video_path)
-            temp_file.binmode
-            temp_file.write(video.read)
-            temp_file.rewind
-            @bot.api.send_video(chat_id: message.from.id, video: Faraday::UploadIO.new(temp_file, 'video/mp4'))
+          begin
+            video_url = message.to_s.split.last
+            Tempfile.open(['downloaded_file', '.mp4']) do |temp_file|
+              video = URI.open(video_url)
+              temp_file.binmode
+              temp_file.write(video.read)
+              temp_file.rewind
+              @bot.api.send_video(chat_id: message.from.id, video: Faraday::UploadIO.new(temp_file, 'video/mp4'))
+            end
+          rescue StandardError
+            @bot.api.send_message(chat_id: message.from.id, text: 'invalid input . try again')
           end
-          # video_stream = StringIO.new(Base64.encode64(URI.open(video_path).read))
 
         else
           @bot.api.send_message(chat_id: message.from.id, text: 'command not found')
