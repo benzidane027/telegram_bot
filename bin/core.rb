@@ -1,6 +1,6 @@
 require 'telegram/bot'
 require 'dotenv/load'
-require 'base64'
+require 'tempfile'
 require_relative './const'
 require_relative './utils'
 
@@ -18,10 +18,17 @@ class Bot
         when '/help'
           @bot.api.send_message(chat_id: message.from.id, text: '/download example.video.mp4')
         when '/d'
-          video_path = 'https://videos.pexels.com/video-files/6000210/6000210-uhd_1440_2560_24fps.mp4'
-          video_stream = StringIO.new(Base64.encode64(URI.open(video_path).read))
 
-          @bot.api.send_video(chat_id: message.from.id, video: Faraday::FilePart.new(video_stream, 'video/mp4'))
+          video_path = 'https://videos.pexels.com/video-files/6000210/6000210-uhd_1440_2560_24fps.mp4'
+          video = URI.open(video_path).read
+          Tempfile.open(['downloaded_file', '.mp4']) do |temp_file|
+            temp_file.binmode
+            temp_file.write(video.read)
+            temp_file.rewind
+            @bot.api.send_video(chat_id: message.from.id, video: Faraday::UploadIO.new(temp_file, 'video/mp4'))
+          end
+          # video_stream = StringIO.new(Base64.encode64(URI.open(video_path).read))
+
         else
           @bot.api.send_message(chat_id: message.from.id, text: 'command not found')
 
