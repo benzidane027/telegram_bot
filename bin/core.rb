@@ -21,7 +21,7 @@ class Bot
           video_path = 'https://videos.pexels.com/video-files/6000210/6000210-uhd_1440_2560_24fps.mp4'
           video_stream = StringIO.new(Base64.encode64(URI.open(video_path).read))
 
-          @bot.api.send_video(chat_id: message.from.id, video: Faraday::FilePart.new(video_stream))
+          @bot.api.send_video(chat_id: message.from.id, video: Faraday::FilePart.new(video_stream, 'video/mp4'))
         else
           @bot.api.send_message(chat_id: message.from.id, text: 'command not found')
 
