@@ -31,7 +31,7 @@ class Bot
             end
           rescue StandardError => e
             puts e
-            @bot.api.send_message(chat_id: message.from.id, text: 'invalid input . try again')
+            @bot.api.send_message(chat_id: message.from.id, text: 'invalid input . try again..')
           end
 
         else
