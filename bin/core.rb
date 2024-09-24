@@ -29,7 +29,8 @@ class Bot
               temp_file.rewind
               @bot.api.send_video(chat_id: message.from.id, video: Faraday::UploadIO.new(temp_file, 'video/mp4'))
             end
-          rescue StandardError
+          rescue StandardError => e
+            puts e
             @bot.api.send_message(chat_id: message.from.id, text: 'invalid input . try again')
           end
 
